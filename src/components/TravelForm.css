@@ -1,0 +1,585 @@
+:root {
+  --dark-blue: #22333B;
+  --cream: #EAE0D5;
+  --tan: #C6AC8E;
+  --dark-blue-transparent: rgba(34, 51, 59, 0.8);
+}
+
+.travel-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background-image: url('https://images.unsplash.com/photo-1530789253388-582c481c54b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  color: var(--cream);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.travel-form-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--dark-blue-transparent);
+  z-index: -1;
+}
+
+.popup {
+  background-color: var(--dark-blue);
+  border-radius: 15px;
+  padding: 30px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--tan);
+}
+
+.popup::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background: linear-gradient(90deg, var(--tan) 0%, var(--cream) 50%, var(--tan) 100%);
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 25px;
+  color: var(--cream);
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--tan);
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--cream);
+  font-weight: 500;
+}
+
+.form-input, .form-select, .airport-select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid var(--tan);
+  border-radius: 8px;
+  background-color: rgba(234, 224, 213, 0.1);
+  color: var(--cream);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.airport-select {
+  position: relative;
+}
+
+.airport-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: var(--dark-blue);
+  border: 2px solid var(--tan);
+  border-radius: 0 0 8px 8px;
+  z-index: 100;
+}
+
+.airport-option {
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.airport-option:hover {
+  background-color: rgba(234, 224, 213, 0.2);
+}
+
+.airport-code {
+  font-weight: bold;
+  color: var(--tan);
+  margin-right: 5px;
+}
+
+.form-input:focus, .form-select:focus {
+  outline: none;
+  border-color: var(--cream);
+  background-color: rgba(234, 224, 213, 0.2);
+  box-shadow: 0 0 10px rgba(198, 172, 142, 0.5);
+}
+
+.form-input::placeholder {
+  color: rgba(234, 224, 213, 0.5);
+}
+
+.trip-type, .dates-container {
+  display: flex;
+  gap: 15px;
+}
+
+.trip-option {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  background-color: rgba(234, 224, 213, 0.1);
+  border: 2px solid var(--tan);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.trip-option.active {
+  background-color: var(--tan);
+  color: var(--dark-blue);
+  font-weight: 600;
+}
+
+.date-input {
+  flex: 1;
+}
+
+.cabin-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.cabin-option {
+  padding: 10px;
+  text-align: center;
+  background-color: rgba(234, 224, 213, 0.1);
+  border: 2px solid var(--tan);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cabin-option.active {
+  background-color: var(--tan);
+  color: var(--dark-blue);
+  font-weight: 600;
+}
+
+.cabin-option svg {
+  margin-right: 5px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 15px;
+  margin-top: 25px;
+  background: linear-gradient(90deg, var(--tan) 0%, var(--cream) 100%);
+  color: var(--dark-blue);
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(198, 172, 142, 0.4);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+.info-text {
+  text-align: center;
+  margin-top: 20px;
+  color: var(--tan);
+  font-size: 0.9rem;
+}
+
+.optional-tag {
+  font-size: 0.8rem;
+  color: var(--tan);
+  font-style: italic;
+  margin-left: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .popup {
+    padding: 20px;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .cabin-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Animation for form submission */
+@keyframes success-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.success-animation {
+  animation: success-pulse 0.5s ease;
+}
+
+/* Error styles */
+.error {
+  border-color: #ff4d4d !important;
+}
+
+.error-message {
+  color: #ff4d4d;
+  font-size: 0.8rem;
+  margin-top: 5px;
+  display: none;
+}
+
+.error-message.visible {
+  display: block;
+}
+
+.success-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--dark-blue);
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  text-align: center;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.success-message.visible {
+  opacity: 1;
+}
+
+:root {
+    --dark-blue: #22333B;
+    --cream: #EAE0D5;
+    --tan: #C6AC8E;
+    --dark-blue-transparent: rgba(34, 51, 59, 0.8);
+}
+
+.travel-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background-image: url('https://images.unsplash.com/photo-1530789253388-582c481c54b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.travel-form-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--dark-blue-transparent);
+    z-index: -1;
+}
+
+.popup {
+    background-color: var(--dark-blue);
+    border-radius: 15px;
+    padding: 30px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    border: 2px solid var(--tan);
+    color: var(--cream);
+}
+
+.popup::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(90deg, var(--tan) 0%, var(--cream) 50%, var(--tan) 100%);
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 25px;
+    color: var(--cream);
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.subtitle {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--tan);
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--cream);
+    font-weight: 500;
+}
+
+.form-input, .form-select, .airport-select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--tan);
+    border-radius: 8px;
+    background-color: rgba(234, 224, 213, 0.1);
+    color: var(--cream);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.airport-select {
+    position: relative;
+}
+
+.airport-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: var(--dark-blue);
+    border: 2px solid var(--tan);
+    border-radius: 0 0 8px 8px;
+    z-index: 100;
+}
+
+.airport-option {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.airport-option:hover {
+    background-color: rgba(234, 224, 213, 0.2);
+}
+
+.airport-code {
+    font-weight: bold;
+    color: var(--tan);
+    margin-right: 5px;
+}
+
+.form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--cream);
+    background-color: rgba(234, 224, 213, 0.2);
+    box-shadow: 0 0 10px rgba(198, 172, 142, 0.5);
+}
+
+.form-input::placeholder {
+    color: rgba(234, 224, 213, 0.5);
+}
+
+.trip-type, .dates-container {
+    display: flex;
+    gap: 15px;
+}
+
+.trip-option {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    background-color: rgba(234, 224, 213, 0.1);
+    border: 2px solid var(--tan);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.trip-option.active {
+    background-color: var(--tan);
+    color: var(--dark-blue);
+    font-weight: 600;
+}
+
+.date-input {
+    flex: 1;
+}
+
+.cabin-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.cabin-option {
+    padding: 10px;
+    text-align: center;
+    background-color: rgba(234, 224, 213, 0.1);
+    border: 2px solid var(--tan);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cabin-option.active {
+    background-color: var(--tan);
+    color: var(--dark-blue);
+    font-weight: 600;
+}
+
+.cabin-option i {
+    margin-right: 5px;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    margin-top: 25px;
+    background: linear-gradient(90deg, var(--tan) 0%, var(--cream) 100%);
+    color: var(--dark-blue);
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(198, 172, 142, 0.4);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.info-text {
+    text-align: center;
+    margin-top: 20px;
+    color: var(--tan);
+    font-size: 0.9rem;
+}
+
+.optional-tag {
+    font-size: 0.8rem;
+    color: var(--tan);
+    font-style: italic;
+    margin-left: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .popup {
+        padding: 20px;
+    }
+
+    .title {
+        font-size: 1.6rem;
+    }
+
+    .cabin-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animation for form submission */
+@keyframes success-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.success-animation {
+    animation: success-pulse 0.5s ease;
+}
+
+/* Error styles */
+.error {
+    border-color: #ff4d4d !important;
+}
+
+.error-message {
+    color: #ff4d4d;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    display: none;
+}
+
+.error-message.visible {
+    display: block;
+}
+
+.success-message {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--dark-blue);
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    text-align: center;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.success-message.visible {
+    opacity: 1;
+}
+

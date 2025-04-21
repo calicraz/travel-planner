@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Vibe Check ✈️</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --dark-blue: #22333B;
+            --cream: #EAE0D5;
+            --tan: #C6AC8E;
+            --dark-blue-transparent: rgba(34, 51, 59, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-blue);
+            color: var(--cream);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-image: url('https://images.unsplash.com/photo-1530789253388-582c481c54b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--dark-blue-transparent);
+            z-index: -1;
+        }
+
+        .popup {
+            background-color: var(--dark-blue);
+            border-radius: 15px;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--tan);
+        }
+
+        .popup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, var(--tan) 0%, var(--cream) 50%, var(--tan) 100%);
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--cream);
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--tan);
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--cream);
+            font-weight: 500;
+        }
+
+        input, select, .airport-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--tan);
+            border-radius: 8px;
+            background-color: rgba(234, 224, 213, 0.1);
+            color: var(--cream);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .airport-select {
+            position: relative;
+        }
+        
+        .airport-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: var(--dark-blue);
+            border: 2px solid var(--tan);
+            border-radius: 0 0 8px 8px;
+            z-index: 100;
+            display: none;
+        }
+        
+        .airport-dropdown.show {
+            display: block;
+        }
+        
+        .airport-option {
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .airport-option:hover {
+            background-color: rgba(234, 224, 213, 0.2);
+        }
+        
+        .airport-code {
+            font-weight: bold;
+            color: var(--tan);
+            margin-right: 5px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--cream);
+            background-color: rgba(234, 224, 213, 0.2);
+            box-shadow: 0 0 10px rgba(198, 172, 142, 0.5);
+        }
+
+        ::placeholder {
+            color: rgba(234, 224, 213, 0.5);
+        }
+
+        .trip-type, .dates-container {
+            display: flex;
+            gap: 15px;
+        }
+
+        .trip-option {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            background-color: rgba(234, 224, 213, 0.1);
+            border: 2px solid var(--tan);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .trip-option.active {
+            background-color: var(--tan);
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        .date-input {
+            flex: 1;
+        }
+
+        .cabin-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .cabin-option {
+            padding: 10px;
+            text-align: center;
+            background-color: rgba(234, 224, 213, 0.1);
+            border: 2px solid var(--tan);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cabin-option.active {
+            background-color: var(--tan);
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        .cabin-option i {
+            margin-right: 5px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            margin-top: 25px;
+            background: linear-gradient(90deg, var(--tan) 0%, var(--cream) 100%);
+            color: var(--dark-blue);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(198, 172, 142, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .info-text {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--tan);
+            font-size: 0.9rem;
+        }
+
+        .optional-tag {
+            font-size: 0.8rem;
+            color: var(--tan);
+            font-style: italic;
+            margin-left: 5px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .popup {
+                padding: 20px;
+            }
+
+            .title {
+                font-size: 1.6rem;
+            }
+
+            .cabin-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation for form submission */
+        @keyframes success-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .success-animation {
+            animation: success-pulse 0.5s ease;
+        }
+
+        /* Error styles */
+        input.error, select.error {
+            border-color: #ff4d4d;
+        }
+
+        .error-message {
+            color: #ff4d4d;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="popup">
+        <h1 class="title">✨ Unlock Travel Vibes ✨</h1>
+        <p class="subtitle">Score epic flight deals curated just for you</p>
+        
+        <form id="travel-form">
+            <div class="form-group">
+                <label for="name">Your Name</label>
+                <input type="text" id="name" placeholder="Enter your name" required>
+                <div class="error-message" id="name-error">Please enter your name</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Where we'll send your travel deals" required>
+                <div class="error-message" id="email-error">Please enter a valid email</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="whatsapp">WhatsApp <span class="optional-tag">(optional)</span></label>
+                <input type="tel" id="whatsapp" placeholder="For faster updates">
+            </div>
+            
+            <div class="form-group">
+                <label for="from">Flying From</label>
+                <div class="airport-select">
+                    <input type="text" id="from" placeholder="City or airport code" autocomplete="off" required>
+                    <div class="airport-dropdown" id="from-dropdown"></div>
+                </div>
+                <div class="error-message" id="from-error">Please enter your departure location</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="to">Flying To</label>
+                <div class="airport-select">
+                    <input type="text" id="to" placeholder="City or airport code" autocomplete="off" required>
+                    <div class="airport-dropdown" id="to-dropdown"></div>
+                </div>
+                <div class="error-message" id="to-error">Please enter your destination</div>
+            </div>
+            
+            <div class="form-group">
+                <label>Trip Type</label>
+                <div class="trip-type">
+                    <div class="trip-option active" data-type="round">Round Trip</div>
+                    <div class="trip-option" data-type="one-way">One Way</div>
+                </div>
+            </div>
+            
+            <div class="form-group" id="dates-group">
+                <label>Travel Dates</label>
+                <div class="dates-container">
+                    <div class="date-input">
+                        <input type="date" id="departure-date" required>
+                        <div class="error-message" id="departure-error">Please select a date</div>
+                    </div>
+                    <div class="date-input" id="return-date-container">
+                        <input type="date" id="return-date" required>
+                        <div class="error-message" id="return-error">Please select a date</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Cabin Class</label>
+                <div class="cabin-options">
+                    <div class="cabin-option active" data-cabin="economy">
+                        <i class="fas fa-chair"></i> Economy
+                    </div>
+                    <div class="cabin-option" data-cabin="premium">
+                        <i class="fas fa-chair"></i> Premium Economy
+                    </div>
+                    <div class="cabin-option" data-cabin="business">
+                        <i class="fas fa-briefcase"></i> Business
+                    </div>
+                    <div class="cabin-option" data-cabin="first">
+                        <i class="fas fa-glass-martini-alt"></i> First Class
+                    </div>
+                </div>
+                <input type="hidden" id="selected-cabin" value="economy">
+            </div>
+            
+            <button type="submit" class="submit-btn">Find My Travel Deals</button>
+        </form>
+        
+        <p class="info-text">We'll get back to you within 48 hours if our team can secure a better rate!</p>
+    </div>
+
+            // Trip type selection
+            const tripOptions = document.querySelectorAll('.trip-option');
+            const returnDateContainer = document.getElementById('return-date-container');
+            const returnDate = document.getElementById('return-date');
+            
+            tripOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    // Remove active class from all options
+                    tripOptions.forEach(opt => opt.classList.remove('active'));
+                    
+                    // Add active class to clicked option
+                    option.classList.add('active');
+                    
+                    // Show/hide return date based on trip type
+                    if (option.dataset.type === 'one-way') {
+                        returnDateContainer.style.display = 'none';
+                        returnDate.removeAttribute('required');
+                    } else {
+                        returnDateContainer.style.display = 'block';
+                        returnDate.setAttribute('required', 'required');
+                    }
+                });
+            });
+            
+            // Cabin class selection
+            const cabinOptions = document.querySelectorAll('.cabin-option');
+            const selectedCabinInput = document.getElementById('selected-cabin');
+            
+            cabinOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    // Remove active class from all options
+                    cabinOptions.forEach(opt => opt.classList.remove('active'));
+                    
+                    // Add active class to clicked option
+                    option.classList.add('active');
+                    
+                    // Update hidden input value
+                    selectedCabinInput.value = option.dataset.cabin;
+                });
+            });
+            
+            // Set min date for departure and return date inputs
+            const today = new Date();
+            const todayFormatted = today.toISOString().split('T')[0];
+            
+            const departureDate = document.getElementById('departure-date');
+            departureDate.setAttribute('min', todayFormatted);
+            
+            departureDate.addEventListener('change', () => {
+                // Set min date for return date input based on departure date
+                returnDate.setAttribute('min', departureDate.value);
+                
+                // If return date is before departure date, reset it
+                if (returnDate.value && returnDate.value < departureDate.value) {
+                    returnDate.value = departureDate.value;
+                }
+            });
+            
+            // Form validation and submission
+            const form = document.getElementById('travel-form');
+            
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Basic validation
+                let isValid = true;
+                
+                const name = document.getElementById('name');
+                const email = document.getElementById('email');
+                const from = document.getElementById('from');
+                const to = document.getElementById('to');
+                
+                // Check name
+                if (!name.value.trim()) {
+                    document.getElementById('name-error').classList.add('visible');
+                    name.classList.add('error');
+                    isValid = false;
+                } else {
+                    document.getElementById('name-error').classList.remove('visible');
+                    name.classList.remove('error');
+                }
+                
+                // Check email
+                // Check email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!email.value.trim() || !emailRegex.test(email.value)) {
+                    document.getElementById('email-error').classList.add('visible');
+                    email.classList.add('error');
+                    isValid = false;
+                } else {
+                    document.getElementById('email-error').classList.remove('visible');
+                    email.classList.remove('error');
+                }
+                
+                // Check from location
+                if (!from.value.trim()) {
+                    document.getElementById('from-error').classList.add('visible');
+                    from.classList.add('error');
+                    isValid = false;
+                } else {
+                    document.getElementById('from-error').classList.remove('visible');
+                    from.classList.remove('error');
+                }
+                
+                // Check to location
+                if (!to.value.trim()) {
+                    document.getElementById('to-error').classList.add('visible');
+                    to.classList.add('error');
+                    isValid = false;
+                } else {
+                    document.getElementById('to-error').classList.remove('visible');
+                    to.classList.remove('error');
+                }
+                
+                // Check departure date
+                const departureDate = document.getElementById('departure-date');
+                if (!departureDate.value) {
+                    document.getElementById('departure-error').classList.add('visible');
+                    departureDate.classList.add('error');
+                    isValid = false;
+                } else {
+                    document.getElementById('departure-error').classList.remove('visible');
+                    departureDate.classList.remove('error');
+                }
+                
+                // Check return date if round trip
+                const activeTrip = document.querySelector('.trip-option.active');
+                if (activeTrip.dataset.type === 'round') {
+                    const returnDate = document.getElementById('return-date');
+                    if (!returnDate.value) {
+                        document.getElementById('return-error').classList.add('visible');
+                        returnDate.classList.add('error');
+                        isValid = false;
+                    } else {
+                        document.getElementById('return-error').classList.remove('visible');
+                        returnDate.classList.remove('error');
+                    }
+                }
+                
+                // If valid, simulate form submission with success animation
+                if (isValid) {
+                    // Collect form data
+                    const formData = {
+                        name: name.value.trim(),
+                        email: email.value.trim(),
+                        whatsapp: document.getElementById('whatsapp').value.trim(),
+                        from: from.value.trim(),
+                        to: to.value.trim(),
+                        tripType: activeTrip.dataset.type,
+                        departureDate: departureDate.value,
+                        returnDate: activeTrip.dataset.type === 'round' ? document.getElementById('return-date').value : null,
+                        cabinClass: document.getElementById('selected-cabin').value
+                    };
+                    };
+                    
+                    console.log('Form data submitted:', formData);
+                    
+                    // Send data to server
+                    fetch('/submit-form', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Success:', data);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // We'll still show success message to user
+                        // You could modify this to show an error message instead
+                    });
+                    
+                    // Show success animation
+                    const popup = document.querySelector('.popup');
+                    popup.classList.add('success-animation');
+                    
+                    // Create success message
+                    successMessage.style.position = 'absolute';
+                    successMessage.style.top = '0';
+                    successMessage.style.left = '0';
+                    successMessage.style.width = '100%';
+                    successMessage.style.height = '100%';
+                    successMessage.style.backgroundColor = 'var(--dark-blue)';
+                    successMessage.style.borderRadius = '15px';
+                    successMessage.style.display = 'flex';
+                    successMessage.style.flexDirection = 'column';
+                    successMessage.style.justifyContent = 'center';
+                    successMessage.style.alignItems = 'center';
+                    successMessage.style.padding = '30px';
+                    successMessage.style.textAlign = 'center';
+                    successMessage.style.zIndex = '10';
+                    successMessage.style.opacity = '0';
+                    successMessage.style.transition = 'opacity 0.5s ease';
+                    
+                    // Success message content
+                    successMessage.innerHTML = `
+                        <div style="font-size: 70px; margin-bottom: 20px;">✈️</div>
+                        <h2 style="color: var(--cream); margin-bottom: 15px; font-size: 1.8rem;">Thanks, ${formData.name}!</h2>
+                        <p style="color: var(--tan); margin-bottom: 20px; font-size: 1.1rem;">We're on the hunt for your perfect travel deal</p>
+                        <p style="color: var(--cream); font-size: 0.9rem;">Check your email at <strong>${formData.email}</strong> for updates</p>
+                        <p style="color: var(--tan); margin-top: 30px; font-size: 0.9rem;">We'll get back to you within 48 hours if we find a better rate!</p>
+                    `;
+                    
+                    // Add success message to the popup
+                    popup.appendChild(successMessage);
+                    
+                    // Trigger reflow to make animation work
+                    void successMessage.offsetWidth;
+                    
+                    // Show success message
+                    setTimeout(() => {
+                        successMessage.style.opacity = '1';
+                    }, 300);
+                    
+                    // Remove animation class after it completes
+                    setTimeout(() => {
+                        popup.classList.remove('success-animation');
+                    }, 500);
+                    
+                    // In a real application, you would send the form data to a server here
+                    // For demo purposes, we're just showing the success message
+                }
+            });
+        });
+    </script>
+</body>
+</html>
