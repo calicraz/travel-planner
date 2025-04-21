@@ -268,14 +268,82 @@
   display: block;
 }
 
-.success-message {
+.success-message.visible {
+  opacity: 1;
+}
+
+/* Add icon support for FontAwesome */
+.cabin-option svg {
+  margin-right: 5px;
+}
+
+.rate-description {
+  color: var(--tan);
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+.payment-type {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.payment-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background-color: rgba(234, 224, 213, 0.1);
+  border: 2px solid var(--tan);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.payment-option.active {
+  background-color: var(--tan);
+  color: var(--dark-blue);
+}
+
+.miles-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.price-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.price-input .currency,
+.price-input .unit {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--dark-blue);
-  border-radius: 15px;
+  color: var(--tan);
+  font-size: 1rem;
+}
+
+.price-input .currency {
+  left: 15px;
+}
+
+.price-input .unit {
+  right: 15px;
+}
+
+.price-input input {
+  padding-left: 30px;
+  padding-right: 65px;
+}
+
+.price-input input[id="currentCashRate"] {
+  padding-left: 30px;
+  padding-right: 15px;
+}
   display: flex;
   flex-direction: column;
   justify-content: center;

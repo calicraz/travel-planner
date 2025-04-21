@@ -2,7 +2,7 @@
   "name": "travel-planner",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://gurdainsingh.github.io/travel-planner",
+  "homepage": "https://calicraz.github.io/travel-planner",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",

@@ -5,7 +5,6 @@ import airports from '../data/airports';
 import config from '../config';
 import './TravelForm.css';
 
-
 const TravelForm = () => {
   // Form state
   const [formData, setFormData] = useState({
@@ -17,8 +16,73 @@ const TravelForm = () => {
     tripType: 'round',
     departureDate: '',
     returnDate: '',
-    cabinClass: 'economy'
+    cabinClass: 'economy',
+    paymentType: 'cash',
+    currentCashRate: '',
+    currentMilesAmount: '',
+    currentMilesTaxes: ''
   });
+
+  // Form validation
+  const validateForm = () => {
+    const newErrors = {};
+    let isValid = true;
+    
+    // Validate name
+    if (!formData.name.trim()) {
+      newErrors.name = true;
+      isValid = false;
+    }
+    
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim() || !emailRegex.test(formData.email)) {
+      newErrors.email = true;
+      isValid = false;
+    }
+    
+    // Validate from destination
+    if (!formData.from.trim()) {
+      newErrors.from = true;
+      isValid = false;
+    }
+    
+    // Validate to destination
+    if (!formData.to.trim()) {
+      newErrors.to = true;
+      isValid = false;
+    }
+    
+    // Validate departure date
+    if (!formData.departureDate) {
+      newErrors.departureDate = true;
+      isValid = false;
+    }
+    
+    // Validate return date for round trips
+    if (formData.tripType === 'round' && !formData.returnDate) {
+      newErrors.returnDate = true;
+      isValid = false;
+    }
+    
+    // Validate current rate fields
+    if (formData.paymentType === 'cash' && !formData.currentCashRate) {
+      newErrors.currentCashRate = true;
+      isValid = false;
+    } else if (formData.paymentType === 'miles') {
+      if (!formData.currentMilesAmount) {
+        newErrors.currentMilesAmount = true;
+        isValid = false;
+      }
+      if (!formData.currentMilesTaxes) {
+        newErrors.currentMilesTaxes = true;
+        isValid = false;
+      }
+    }
+    
+    setErrors(newErrors);
+    return isValid;
+  };
 
   // UI state
   const [errors, setErrors] = useState({});
@@ -111,52 +175,37 @@ const TravelForm = () => {
     });
   };
   
-  // Form validation
-  const validateForm = () => {
-    const newErrors = {};
-    let isValid = true;
-    
-    // Validate name
-    if (!formData.name.trim()) {
-      newErrors.name = true;
-      isValid = false;
-    }
-    
-    // Validate email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email.trim() || !emailRegex.test(formData.email)) {
-      newErrors.email = true;
-      isValid = false;
-    }
-    
-    // Validate from destination
-    if (!formData.from.trim()) {
-      newErrors.from = true;
-      isValid = false;
-    }
-    
-    // Validate to destination
-    if (!formData.to.trim()) {
-      newErrors.to = true;
-      isValid = false;
-    }
-    
-    // Validate departure date
-    if (!formData.departureDate) {
-      newErrors.departureDate = true;
-      isValid = false;
-    }
-    
-    // Validate return date for round trips
-    if (formData.tripType === 'round' && !formData.returnDate) {
-      newErrors.returnDate = true;
-      isValid = false;
-    }
-    
-    setErrors(newErrors);
-    return isValid;
+  // Handle payment type change
+  const handlePaymentTypeChange = (type) => {
+    setFormData({
+      ...formData,
+      paymentType: type,
+      // Reset values when switching types
+      currentCashRate: type === 'cash' ? formData.currentCashRate : '',
+      currentMilesAmount: type === 'miles' ? formData.currentMilesAmount : '',
+      currentMilesTaxes: type === 'miles' ? formData.currentMilesTaxes : ''
+    });
   };
-
+  
+  
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (fromInputRef.current && !fromInputRef.current.contains(e.target)) {
+        setShowFromDropdown(false);
+      }
+      if (toInputRef.current && !toInputRef.current.contains(e.target)) {
+        setShowToDropdown(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  
+  // Success message component
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -206,23 +255,6 @@ const TravelForm = () => {
     }
   };
 
-  // Close dropdowns when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (fromInputRef.current && !fromInputRef.current.contains(e.target)) {
-        setShowFromDropdown(false);
-      }
-      if (toInputRef.current && !toInputRef.current.contains(e.target)) {
-        setShowToDropdown(false);
-      }
-    };
-    
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-  
   // Success message component
   const SuccessMessage = () => (
     <div className={`success-message ${showSuccess ? 'visible' : ''}`}>
@@ -245,10 +277,11 @@ const TravelForm = () => {
   return (
     <div className="travel-form-container">
       <div className="popup" ref={popupRef}>
-        <h1 className="title">✨ Unlock Travel Vibes ✨</h1>
+        <h1 className="title">✨ Let's Beat Your Flight Price ✨</h1>
         <p className="subtitle">Score epic flight deals curated just for you</p>
         
         <form onSubmit={handleSubmit}>
+          {/* Personal Information Section */}
           <div className="form-group">
             <label className="form-label" htmlFor="name">Your Name</label>
             <input 
@@ -291,6 +324,7 @@ const TravelForm = () => {
             />
           </div>
           
+          {/* Travel Details Section */}
           <div className="form-group">
             <label className="form-label" htmlFor="from">Flying From</label>
             <div className="airport-select" ref={fromInputRef}>
@@ -354,7 +388,8 @@ const TravelForm = () => {
             </div>
             {errors.to && <p className="error-message visible">Please enter your destination</p>}
           </div>
-          
+
+          {/* Trip Type Section */}
           <div className="form-group">
             <label className="form-label">Trip Type</label>
             <div className="trip-type">
@@ -372,39 +407,41 @@ const TravelForm = () => {
               </div>
             </div>
           </div>
-          
+
+          {/* Dates Section */}
           <div className="form-group">
             <label className="form-label">Travel Dates</label>
             <div className="dates-container">
               <div className="date-input">
                 <input 
                   type="date" 
-                  id="departureDate" 
+                  id="departureDate"
                   className={`form-input ${errors.departureDate ? 'error' : ''}`}
-                  min={today}
                   value={formData.departureDate}
                   onChange={handleInputChange}
+                  min={today}
                   required 
                 />
-                {errors.departureDate && <p className="error-message visible">Please select a date</p>}
+                {errors.departureDate && <p className="error-message visible">Please select departure date</p>}
               </div>
               {formData.tripType === 'round' && (
                 <div className="date-input">
                   <input 
                     type="date" 
-                    id="returnDate" 
+                    id="returnDate"
                     className={`form-input ${errors.returnDate ? 'error' : ''}`}
-                    min={formData.departureDate || today}
                     value={formData.returnDate}
                     onChange={handleInputChange}
-                    required={formData.tripType === 'round'} 
+                    min={formData.departureDate || today}
+                    required 
                   />
-                  {errors.returnDate && <p className="error-message visible">Please select a date</p>}
+                  {errors.returnDate && <p className="error-message visible">Please select return date</p>}
                 </div>
               )}
             </div>
           </div>
-          
+
+          {/* Cabin Class Section */}
           <div className="form-group">
             <label className="form-label">Cabin Class</label>
             <div className="cabin-options">
@@ -434,8 +471,91 @@ const TravelForm = () => {
               </div>
             </div>
           </div>
-          
-          <button type="submit" className="submit-btn">Find My Travel Deals</button>
+
+          {/* Current Rate Section */}
+          <div className="form-group">
+            <label className="form-label">Your Current Rate</label>
+            <p className="rate-description">Tell us what you're currently paying so we can try to beat it</p>
+            
+            <div className="payment-type">
+              <div 
+                className={`payment-option ${formData.paymentType === 'cash' ? 'active' : ''}`}
+                onClick={() => handlePaymentTypeChange('cash')}
+              >
+                <input 
+                  type="radio" 
+                  name="paymentType" 
+                  value="cash" 
+                  checked={formData.paymentType === 'cash'}
+                  onChange={() => handlePaymentTypeChange('cash')}
+                />
+                <span>Cash Rate</span>
+              </div>
+              <div 
+                className={`payment-option ${formData.paymentType === 'miles' ? 'active' : ''}`}
+                onClick={() => handlePaymentTypeChange('miles')}
+              >
+                <input 
+                  type="radio" 
+                  name="paymentType" 
+                  value="miles" 
+                  checked={formData.paymentType === 'miles'}
+                  onChange={() => handlePaymentTypeChange('miles')}
+                />
+                <span>Miles + Taxes Rate</span>
+              </div>
+            </div>
+            
+            {formData.paymentType === 'cash' ? (
+              <div className="price-input">
+                <span className="currency">$</span>
+                <input 
+                  type="number" 
+                  id="currentCashRate"
+                  className={`form-input ${errors.currentCashRate ? 'error' : ''}`}
+                  placeholder="Your current cash rate" 
+                  value={formData.currentCashRate}
+                  onChange={handleInputChange}
+                  required
+                />
+                {errors.currentCashRate && <p className="error-message visible">Please enter your current cash rate</p>}
+              </div>
+            ) : (
+              <div className="miles-input-group">
+                <div className="price-input">
+                  <input 
+                    type="number" 
+                    id="currentMilesAmount"
+                    className={`form-input ${errors.currentMilesAmount ? 'error' : ''}`}
+                    placeholder="Number of miles required" 
+                    value={formData.currentMilesAmount}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  <span className="unit">miles</span>
+                  {errors.currentMilesAmount && <p className="error-message visible">Please enter the miles amount</p>}
+                </div>
+                <div className="price-input">
+                  <span className="currency">$</span>
+                  <input 
+                    type="number" 
+                    id="currentMilesTaxes"
+                    className={`form-input ${errors.currentMilesTaxes ? 'error' : ''}`}
+                    placeholder="Taxes and fees amount" 
+                    value={formData.currentMilesTaxes}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  {errors.currentMilesTaxes && <p className="error-message visible">Please enter the taxes amount</p>}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Submit Button */}
+          <button type="submit" className="submit-btn">
+            Let's Cop a Better Deal 🎯
+          </button>
         </form>
         
         <p className="info-text">We'll get back to you within 48 hours if our team can secure a better rate!</p>
