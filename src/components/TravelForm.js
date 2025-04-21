@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChair, faBriefcase, faGlassMartini } from '@fortawesome/free-solid-svg-icons';
 import airports from '../data/airports';
+import config from '../config';
 import './TravelForm.css';
+
 
 const TravelForm = () => {
   // Form state
@@ -57,8 +59,8 @@ const TravelForm = () => {
       handleAirportSearch(value, 'to');
     }
   };
-  
-  // Handle airport search and filter
+
+  // Handle airport search and filtering
   const handleAirportSearch = (query, fieldName) => {
     const searchTerm = query.toLowerCase();
     const filteredAirports = airports.filter(airport => 
@@ -154,7 +156,7 @@ const TravelForm = () => {
     setErrors(newErrors);
     return isValid;
   };
-  
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -166,34 +168,28 @@ const TravelForm = () => {
           popupRef.current.classList.add('success-animation');
         }
         
-        // Send data to server
-        const response = await fetch('/api/submit-form', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData)
-        });
-        
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+        if (config.USE_MOCK_API) {
+          // For GitHub Pages demo, simulate a successful API response
+          console.log('Mock API call with data:', formData);
+          // Simulate a delay for better user experience
+          await new Promise(resolve => setTimeout(resolve, 800));
+        } else {
+          // Send data to server
+          const response = await fetch(`${config.API_URL}/submit-form`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+          });
+          
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
         }
         
         // Show success message
         setShowSuccess(true);
-        
-        // Reset form after submission (optional)
-        // setFormData({
-        //   name: '',
-        //   email: '',
-        //   whatsapp: '',
-        //   from: '',
-        //   to: '',
-        //   tripType: 'round',
-        //   departureDate: '',
-        //   returnDate: '',
-        //   cabinClass: 'economy'
-        // });
         
       } catch (error) {
         console.error('Error submitting form:', error);
@@ -209,7 +205,7 @@ const TravelForm = () => {
       }
     }
   };
-  
+
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -245,7 +241,7 @@ const TravelForm = () => {
       </p>
     </div>
   );
-
+  
   return (
     <div className="travel-form-container">
       <div className="popup" ref={popupRef}>
